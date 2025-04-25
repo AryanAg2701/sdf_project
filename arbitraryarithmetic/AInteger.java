@@ -65,7 +65,7 @@ public class AInteger {
 
     public AInteger sub(AInteger a) {
         if (this.sign && a.sign) {
-            return new AInteger(this.subing(a)); // If both a -ve substract first from second
+            return new AInteger(a.subing(this)); // If both a -ve substract first from second
         }
         if (this.sign && !a.sign) {
             return new AInteger("-" + a.adding(this)); // If opoosite sign add them.
@@ -73,7 +73,7 @@ public class AInteger {
         if (!this.sign && a.sign) {
             return (a.adding(this)); // If opoosite sign add them.
         } else {
-            return new AInteger(a.subing(this)); // If both a +ve substract second from first
+            return new AInteger(this.subing(a)); // If both a +ve substract second from first
         }
     }
 
@@ -120,6 +120,7 @@ public class AInteger {
         AInteger ans = new AInteger(); // to store the ouput
 
         ans.num = addstr(x, y); // calling helper func addstr
+
         ans.sign = false; // for adding always positive.
         return ans;
     }
@@ -129,10 +130,31 @@ public class AInteger {
         String y = this.num;
         AInteger ans = new AInteger(); // to store the ouput
 
-        ans.num = substr(x, y); // sending to helper substr fn
-        ans.sign = false; // for adding always positive.
-        return ans;
-
+        if (this.num.length() < a.num.length()) {
+            ans.num = substr(a.num, this.num);      //Substracting bigger number from smaller and changinf the value of sign if swapped
+            ans.sign = true;
+        } else if (this.num.length() > a.num.length()) {
+            ans.num = substr(this.num, a.num);
+            ans.sign = false;
+        } else {
+            int i = 0;
+            //chechking similarity of digits from left hand side
+            while (i < this.num.length() && this.num.charAt(i) == a.num.charAt(i)) {
+                i++;
+            }
+            //if all the digits matched return 0
+            if (i == this.num.length()) {
+                ans.num = "0";
+                ans.sign = false;
+            } else if (this.num.charAt(i) < a.num.charAt(i)) {
+                ans.num = substr(a.num, this.num);      //substract the lexicographical larger from the smaller and updating the sign if swapped again
+                ans.sign = true;
+            } else {
+                ans.num = substr(this.num, a.num);
+                ans.sign = false;
+            }
+        }
+        return ans; //return ans AInteger
     }
 
     private static String addstr(String a, String b) {
@@ -145,8 +167,7 @@ public class AInteger {
         int d1, d2, sum;
 
         if (size1 < size2) {
-            return addstr(b, a); // Keeping the larger of both as the first parameter (in terms of length of
-                                 // string)
+            return addstr(b, a); // Keeping the larger of both as the first parameter (in terms of length of string)
         }
 
         // while loop for smaller number
