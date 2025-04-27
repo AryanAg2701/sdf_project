@@ -80,19 +80,20 @@ public class AInteger {
     public AInteger mul(AInteger a) {
         AInteger ans = new AInteger();
 
-        ans.num = mulstr(this.num, a.num);
+        ans.num = mulstr(this.num, a.num); // call the mul string function
 
         if (this.sign == a.sign) {
-            ans.sign = false;
+            ans.sign = false; // if same sign then the resukt will have +ve sign
         }
 
         else {
-            ans.sign = true;
+            ans.sign = true; // else negtive
         }
         return ans;
     }
 
     public AInteger div(AInteger a) {
+        // Handling the division by zero case if the second element is 0;
         if (a.num.equals("0")) {
             System.out.println("Division by zero error");
             System.exit(0);
@@ -100,13 +101,13 @@ public class AInteger {
 
         } else {
             AInteger ans = new AInteger();
-            ans.num = divstr(this.num, a.num);
+            ans.num = divstr(this.num, a.num); // call function
 
             if (this.sign == a.sign)
-                ans.sign = false;
+                ans.sign = false; // same sign gives positive result
 
             else {
-                ans.sign = true;
+                ans.sign = true; // else negative result
             }
             return ans;
         }
@@ -131,30 +132,32 @@ public class AInteger {
         AInteger ans = new AInteger(); // to store the ouput
 
         if (this.num.length() < a.num.length()) {
-            ans.num = substr(a.num, this.num);      //Substracting bigger number from smaller and changinf the value of sign if swapped
+            ans.num = substr(a.num, this.num); // Substracting bigger number from smaller and changinf the value of sign
+                                               // if swapped
             ans.sign = true;
         } else if (this.num.length() > a.num.length()) {
             ans.num = substr(this.num, a.num);
             ans.sign = false;
         } else {
             int i = 0;
-            //chechking similarity of digits from left hand side
+            // chechking similarity of digits from left hand side
             while (i < this.num.length() && this.num.charAt(i) == a.num.charAt(i)) {
                 i++;
             }
-            //if all the digits matched return 0
+            // if all the digits matched return 0
             if (i == this.num.length()) {
                 ans.num = "0";
                 ans.sign = false;
             } else if (this.num.charAt(i) < a.num.charAt(i)) {
-                ans.num = substr(a.num, this.num);      //substract the lexicographical larger from the smaller and updating the sign if swapped again
+                ans.num = substr(a.num, this.num); // substract the lexicographical larger from the smaller and updating
+                                                   // the sign if swapped again
                 ans.sign = true;
             } else {
                 ans.num = substr(this.num, a.num);
                 ans.sign = false;
             }
         }
-        return ans; //return ans AInteger
+        return ans; // return ans AInteger
     }
 
     private static String addstr(String a, String b) {
@@ -167,7 +170,8 @@ public class AInteger {
         int d1, d2, sum;
 
         if (size1 < size2) {
-            return addstr(b, a); // Keeping the larger of both as the first parameter (in terms of length of string)
+            return addstr(b, a); // Keeping the larger of both as the first parameter (in terms of length of
+                                 // string)
         }
 
         // while loop for smaller number
@@ -258,76 +262,83 @@ public class AInteger {
 
     private static String mulstr(String a, String b) {
         int temp = 0;
-        int size1 = a.length();
+        int size1 = a.length(); // storing lengths
         int size2 = b.length();
         int[] result = new int[size1 + size2];
+        // runming for loop for each element as we do in elementary multiplication
         for (int i = size1 - 1; i >= 0; i--) {
             for (int j = size2 - 1; j >= 0; j--) {
-                temp = result[i + j + 1] + (a.charAt(i) - '0') * (b.charAt(j) - '0');
-                result[i + j + 1] = temp % 10;
-                result[i + j]     += temp / 10;
+                temp = result[i + j + 1] + (a.charAt(i) - '0') * (b.charAt(j) - '0');// multiply the single char
+                result[i + j + 1] = temp % 10;// add the unit digit
+                result[i + j] += temp / 10;// add carry to next element
             }
         }
         String ans = "";
         for (int i = 0; i < result.length; i++) {
-            ans += result[i];
+            ans += result[i]; // add result in the ans string from char to string
         }
-        return removezero(ans);
+        return removezero(ans);// return after removingzeros
     }
 
     private static String divstr(String a, String b) {
         if (b.equals("0")) {
-            return "Division by zero error";
+            return "Division by zero error"; // rechecking division by zero error
         }
         if (a.equals("0")) {
-            return "0";
+            return "0"; // if first element is 0 dont proceed
         }
-        int size1 = a.length();
+        int size1 = a.length(); // storing lengths
         int size2 = b.length();
-        if (size1 < size2) {
+        if (size1 < size2)// if smaller first element then return 0;
+        {
             return "0";
         }
 
-        int[] remainder = new int[b.length()];
+        // initialize remainder with first digits of a
+        int[] remainder = new int[size2];
         for (int i = 0; i < size2; i++) {
             remainder[i] = a.charAt(i) - '0';
         }
 
+        // make array for result digits
         int[] result = new int[size1 - size2 + 1];
         for (int i = 0; i < result.length; i++) {
             int count = 0;
+            // build current remainder string
             String rem = "";
             for (int k = 0; k < remainder.length; k++) {
-                rem += (char)(remainder[k] + '0');
+                rem += (char) (remainder[k] + '0');// add character found after calculation after parsing to char
             }
 
+            // subtract divisor repeatedly
             while (rem.length() > size2 || (rem.length() == size2 && rem.compareTo(b) >= 0)) {
-                rem = substr(rem, b);
-                rem = removezero(rem);
+                rem = substr(rem, b); // subtract b from rem till rem becomes smaller
+                rem = removezero(rem); // remove leading zeros in each iteration
                 count++;
             }
 
             if (i + size2 < size1) {
                 rem += a.charAt(i + size2);
             }
-
             rem = removezero(rem);
+
+            // update remainder array for next iteration
             remainder = new int[rem.length()];
             for (int j = 0; j < rem.length(); j++) {
-                remainder[j] = rem.charAt(j) - '0';
+                remainder[j] = rem.charAt(j) - '0';// remainder is element at string for computation
             }
-
             result[i] = count;
         }
 
+        // initialize finak output stirng
         String ans = "";
         for (int i = 0; i < result.length; i++) {
-            ans += (char)(result[i] + '0');
+            ans += (char) (result[i] + '0'); // add in the final string after parsing to char
         }
-        return removezero(ans);
+        return removezero(ans);// return after removing zeros
     }
 
-    // Removinf zeros at start of string if any
+    // Removing zeros at start of string if any
     private static String removezero(String s) {
         int size1 = 0;
         // break when first non zero element is encountered
@@ -344,12 +355,13 @@ public class AInteger {
 
     @Override
     public String toString() {
-        if(num.equals("0"))return num;  // if zero is encountered return the 0 string
+        if (num.equals("0"))
+            return num; // if zero is encountered return the 0 string
         String ans = "";
         if (sign) {
-            ans += "-";                         //Add - sign at start if sign is true
+            ans += "-"; // Add - sign at start if sign is true
         }
-        ans += num;                             //Add main string to ans
+        ans += num; // Add main string to ans
         return ans;
     } //
 }
