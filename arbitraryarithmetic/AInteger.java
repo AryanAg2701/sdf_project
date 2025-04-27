@@ -257,11 +257,74 @@ public class AInteger {
     }
 
     private static String mulstr(String a, String b) {
-        return "0";
+        int temp = 0;
+        int size1 = a.length();
+        int size2 = b.length();
+        int[] result = new int[size1 + size2];
+        for (int i = size1 - 1; i >= 0; i--) {
+            for (int j = size2 - 1; j >= 0; j--) {
+                temp = result[i + j + 1] + (a.charAt(i) - '0') * (b.charAt(j) - '0');
+                result[i + j + 1] = temp % 10;
+                result[i + j]     += temp / 10;
+            }
+        }
+        String ans = "";
+        for (int i = 0; i < result.length; i++) {
+            ans += result[i];
+        }
+        return removezero(ans);
     }
 
     private static String divstr(String a, String b) {
-        return "0";
+        if (b.equals("0")) {
+            return "Division by zero error";
+        }
+        if (a.equals("0")) {
+            return "0";
+        }
+        int size1 = a.length();
+        int size2 = b.length();
+        if (size1 < size2) {
+            return "0";
+        }
+
+        int[] remainder = new int[b.length()];
+        for (int i = 0; i < size2; i++) {
+            remainder[i] = a.charAt(i) - '0';
+        }
+
+        int[] result = new int[size1 - size2 + 1];
+        for (int i = 0; i < result.length; i++) {
+            int count = 0;
+            String rem = "";
+            for (int k = 0; k < remainder.length; k++) {
+                rem += (char)(remainder[k] + '0');
+            }
+
+            while (rem.length() > size2 || (rem.length() == size2 && rem.compareTo(b) >= 0)) {
+                rem = substr(rem, b);
+                rem = removezero(rem);
+                count++;
+            }
+
+            if (i + size2 < size1) {
+                rem += a.charAt(i + size2);
+            }
+
+            rem = removezero(rem);
+            remainder = new int[rem.length()];
+            for (int j = 0; j < rem.length(); j++) {
+                remainder[j] = rem.charAt(j) - '0';
+            }
+
+            result[i] = count;
+        }
+
+        String ans = "";
+        for (int i = 0; i < result.length; i++) {
+            ans += (char)(result[i] + '0');
+        }
+        return removezero(ans);
     }
 
     // Removinf zeros at start of string if any
