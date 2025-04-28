@@ -41,7 +41,7 @@ public class AFloat {
             }
         }
 
-        // remove all decimal points
+        //remove all decimal points
         String t = "";
         for (int i = 0; i < s.length(); i++) {
             if (s.charAt(i) != '.')
@@ -54,18 +54,18 @@ public class AFloat {
             pos = s.length();
 
         int i = 0;
-        // skip leading zeros
+        //storing index for 0's at start of string
         while (i < pos && s.charAt(i) == '0') {
             i++;
         }
 
         int j = s.length() - 1;
-        // skip trailing zeros
+        //storing index for 0's at end of string
         while (j > pos && s.charAt(j) == '0') {
             j--;
         }
 
-        // use only significant digits
+        // use only significant digits make the substring from i to j
         this.num = "";
         for (int k = i; k <= j; k++) {
             this.num += s.charAt(k);
@@ -73,12 +73,12 @@ public class AFloat {
 
         this.dec = pos - i; // set decimal count
 
-        //add 0 at start
+        // add 0 at start if position of decimal place is last.
         if (this.dec == 0) {
             this.num = "0" + this.num;
             this.dec = 1;
         }
-        //add 0 after decimal
+        // add 0 after decimal if position of decimal place is first.
         if (dec == this.num.length() - 1) {
             this.num = this.num + "0";
         }
@@ -96,5 +96,164 @@ public class AFloat {
         this.num = other.num;
         this.dec = other.dec;
         this.sign = other.sign;
+    }
+
+    public AInteger makeint(String s, boolean sign) {
+        //function to convert flow as a instance of AInteger to be able to use its functions
+        AInteger x = new AInteger();
+        x.num = s;
+        x.sign = sign;
+        return x;
+    }
+
+    public AFloat add(AFloat a) {
+        AFloat ans = new AFloat();  //make ans variable
+        
+        //add zeros for the string which has lesser number of digits after decimal
+        if (this.num.length() - this.dec > a.num.length() - a.dec) {
+            a.num = addzeros(a.num, this.num.length() - this.dec - a.num.length() + a.dec);//adding zeros and giving the count of extra zeros needed
+        } else {
+            this.num = addzeros(this.num, a.num.length() - a.dec - this.num.length() + this.dec);
+        }
+
+        //converting the given variables to int after removing the decimal place 
+        //and adding the two ints from the methods of AInteger
+        AInteger y = makeint(this.num, this.sign).add(makeint(a.num, a.sign)); 
+        ans.num = y.num;
+
+        ans.sign = y.sign;
+
+        //set dec as the greater number of digits after decimal of the two float values
+        ans.dec = Math.max(this.num.length() - this.dec, a.num.length() - a.dec);
+        return ans;     //return ans
+    }
+
+    public String addzeros(String s, int count) {
+        //run loop for count times and add that many number of zeros at end
+        for (int i = 0; i < count; i++) {
+            s += "0";
+        }
+        return s;
+    }
+
+    public AFloat sub(AFloat a) {
+        AFloat ans = new AFloat();   //make ans variable
+
+        //add zeros for the string which has lesser number of digits after decimal
+        if (this.num.length() - this.dec > a.num.length() - a.dec) {
+            a.num = addzeros(a.num, this.num.length() - this.dec - a.num.length() + a.dec);
+        } else {
+            this.num = addzeros(this.num, a.num.length() - a.dec - this.num.length() + this.dec);
+        }
+
+        //converting the given variables to int after removing the decimal place 
+        //and substracting the two ints from the methods of AInteger
+        AInteger y = makeint(this.num, this.sign).sub(makeint(a.num, a.sign));
+        ans.num = y.num;
+        ans.sign = y.sign;
+
+        //set dec as the greater number of digits after decimal of the two float values
+        ans.dec = Math.max(this.num.length() - this.dec, a.num.length() - a.dec);
+        return ans;     //return ans
+    }
+
+    public AFloat mul(AFloat a) {
+        AFloat ans = new AFloat();  //make ans variable
+
+        //converting the given variables to int after removing the decimal place 
+        //and multiplying the two ints from the methods of AInteger
+        AInteger y = makeint(this.num, this.sign).mul(makeint(a.num, a.sign));
+        ans.num = y.num;
+        ans.sign = y.sign;
+
+        //set dec as the sum number of digits after decimal for the two float values
+        ans.dec = (this.num.length() - this.dec) + (a.num.length() - a.dec);
+        return ans;
+    }
+
+    // public AFloat div(AFloat a) {
+    //     return;
+    // }
+
+    @Override
+    public String toString() {
+
+        //Edge case if object is zero already return 0
+        if (num.equals("0")){
+            return "0";
+        }
+
+        int i = 0;
+        //storing index for 0's at start of string
+        while (i < num.length() - dec && num.charAt(i) == '0') {
+            i++;
+        }
+
+        int j = num.length() - 1;
+        //storing index for 0's at end of string
+        while (j >= num.length() - dec && num.charAt(j) == '0') {
+            j--;
+        }
+
+        String s = "";      //initializing substring
+
+        //make substring from i to j.
+        for (int k = i; k <= j; k++) {
+            s += num.charAt(k);
+        }
+
+        //if the string is empty means it contained only 0's so return 0.
+        if (s.length() == 0) {
+            return "0";
+        }
+
+        String ans = "";    //initializing ans string
+
+        //New position of decimal as xzremoving 0's can change it.
+        int decnew = s.length() - (num.length() - dec - i);
+        //if it is greater than the substring length then we need to add 0's after decimal and before ans string
+        if (decnew >= s.length()) {
+            ans = "0.";     //starting the string with "0."
+
+            //adding required number of 0's after decimal.
+            for (int z = s.length(); z < decnew; z++) {
+                ans += "0";
+            }
+            //Appending the main ans string
+            for (int k = 0; k < s.length(); k++) {
+                ans += s.charAt(k);
+            }
+        } 
+        //if not place the decimal after decnew digits are traversed
+        else {
+            for (int k = 0; k < s.length(); k++) {
+                if (k == s.length() - decnew)//At decnew from back position add a '.'.
+                {
+                    ans += ".";
+                }
+                ans = ans + s.charAt(k);    //Append the char at kth index in main string.
+            }
+        }
+
+        //If last element is '.' then make a new string and dont include the last decimal symbol in it
+        if (ans.charAt(ans.length() - 1) == '.') {
+            String tmp = "";
+            //Iterating only till n-2.
+            for (int k = 0; k < ans.length() - 1; k++) {
+                tmp += ans.charAt(k);
+            }
+            ans = tmp;
+        }
+
+        //If string starts with '.' add a 0 before it.
+        if (ans.charAt(0) == '.') {
+            ans = "0" + ans;
+        }
+
+        //Add '-' at start of string if negative
+        if (sign) {
+            ans = "-" + ans;
+        }
+        return ans;     //return the modified string after conversion
     }
 }
