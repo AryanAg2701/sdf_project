@@ -43,10 +43,9 @@ public class MyInfArith {
         }
         //Creating if for floating point numbers
         else if (ds.equals("float")) {
-            //Creating AFloat Objects from given string
+                        //Creating AFloat Objects from given string
             AFloat a = new AFloat(s1);
             AFloat b = new AFloat(s2);
-            //Switch case for each operation.
             switch (opr) {
                 case "add": {
                     System.out.println((a.add(b).toString()));
