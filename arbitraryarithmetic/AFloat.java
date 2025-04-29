@@ -73,16 +73,6 @@ public class AFloat {
 
         this.dec = pos - i; // set decimal count
 
-        // add 0 at start if position of decimal place is last.
-        if (this.dec == 0) {
-            this.num = "0" + this.num;
-            this.dec = 1;
-        }
-        // add 0 after decimal if position of decimal place is first.
-        if (dec == this.num.length() - 1) {
-            this.num = this.num + "0";
-        }
-
         // return
         AFloat ans = new AFloat();
         ans.num = this.num;
@@ -98,7 +88,7 @@ public class AFloat {
         this.sign = other.sign;
     }
 
-    public AInteger makeint(String s, boolean sign) {
+    private static AInteger makeint(String s, boolean sign) {
         //function to convert flow as a instance of AInteger to be able to use its functions
         AInteger x = new AInteger();
         x.num = s;
@@ -128,7 +118,7 @@ public class AFloat {
         return ans;     //return ans
     }
 
-    public String addzeros(String s, int count) {
+    private static String addzeros(String s, int count) {
         //run loop for count times and add that many number of zeros at end
         for (int i = 0; i < count; i++) {
             s += "0";

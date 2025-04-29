@@ -71,7 +71,7 @@ public class AInteger {
             return new AInteger("-" + a.adding(this)); // If opoosite sign add them.
         }
         if (!this.sign && a.sign) {
-            return (a.adding(this)); // If opoosite sign add them.
+            return new AInteger(a.adding(this)); // If opoosite sign add them.
         } else {
             return new AInteger(this.subing(a)); // If both a +ve substract second from first
         }
@@ -114,7 +114,7 @@ public class AInteger {
     }
 
     // Adding the AInteger values only when both the strings are positive
-    public AInteger adding(AInteger a) {
+    private AInteger adding(AInteger a) {
         // Defining to strings to pass to the helper functions
         String x = a.num;
         String y = this.num;
@@ -126,14 +126,13 @@ public class AInteger {
         return ans;
     }
 
-    public AInteger subing(AInteger a) {
+    private AInteger subing(AInteger a) {
         String x = a.num;
         String y = this.num;
         AInteger ans = new AInteger(); // to store the ouput
 
         if (this.num.length() < a.num.length()) {
-            ans.num = substr(a.num, this.num); // Substracting bigger number from smaller and changinf the value of sign
-                                               // if swapped
+            ans.num = substr(a.num, this.num); // Substracting bigger number from smaller and changinf the value of sign if swapped
             ans.sign = true;
         } else if (this.num.length() > a.num.length()) {
             ans.num = substr(this.num, a.num);
@@ -149,8 +148,7 @@ public class AInteger {
                 ans.num = "0";
                 ans.sign = false;
             } else if (this.num.charAt(i) < a.num.charAt(i)) {
-                ans.num = substr(a.num, this.num); // substract the lexicographical larger from the smaller and updating
-                                                   // the sign if swapped again
+                ans.num = substr(a.num, this.num); // substract the lexicographical larger from the smaller and updating the sign if swapped again
                 ans.sign = true;
             } else {
                 ans.num = substr(this.num, a.num);
@@ -170,8 +168,7 @@ public class AInteger {
         int d1, d2, sum;
 
         if (size1 < size2) {
-            return addstr(b, a); // Keeping the larger of both as the first parameter (in terms of length of
-                                 // string)
+            return addstr(b, a); // Keeping the larger of both as the first parameter (in terms of length of string)
         }
 
         // while loop for smaller number
