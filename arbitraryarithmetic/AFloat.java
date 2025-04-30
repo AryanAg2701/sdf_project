@@ -161,9 +161,143 @@ public class AFloat {
         return ans;
     }
 
-    // public AFloat div(AFloat a) {
-    //     return;
-    // }
+    public AFloat div(AFloat a) {
+        //Edge case of division by zero
+        if (removezero(a.num).equals("0")) {
+            AFloat ans = new AFloat();
+            ans.num = "Division by zero error";
+            return ans;     //return dummy ans in error case
+        }
+
+        String x = this.num;    //Making strings for operands
+        String y = a.num;
+
+        int diff = x.length() + a.dec - this.dec - y.length();  //extra digits after the decimal for whichever is greater
+
+        if (diff > 0) {
+            // Divisor has more decimals add zeros to numerator
+            for (int i = 0; i < diff; i++) {
+                y = y + "0";
+            }
+        } else {
+            // Else add zeros to divisor
+            for (int i = 0; i < -diff; i++) {
+                x = x + "0";
+            }
+        }
+
+        int size1 = x.length();     //Storing the sizes of both stings
+        int size2 = y.length();
+
+        String remainder;
+        //If the dividend is greter than divisor take the starting divisor as only start
+        if (size2 <= size1) {
+            remainder = "";
+
+            //Making the substring
+            for (int i = 0; i < size2 && i < size1; i++) {
+                remainder += x.charAt(i);
+            }
+        } else {
+            //else take the whole divident as rem
+            remainder = x;
+        }
+
+        String quotient = "";
+
+        for (int i = 0; i <= size1 - size2; i++) {
+
+            int count = 0;      //Count variable for counting number of substraction in each iteration
+
+            //Add zeros to remainder till it is smaller than divisor
+            while (remainder.length() < size2) {
+                remainder = "0" + remainder;
+            }
+
+            //Continue substracting divisor from remainder till it is larger than divisor
+            while (remainder.length() > size2|| (remainder.length() == size2 && remainder.compareTo(y) >= 0)) {
+                //converting both the strings to AInteger for infinite substraction
+                remainder = makeint(remainder, false).sub(makeint(y, false)).toString();    
+                remainder = removezero(remainder);      //removing zeros at start if any.
+                count++;                                //Incrementing count number if substract operations.
+
+            }
+
+            quotient += (char) (count + '0'); // Add the quotient count to the ans after parsing to char
+
+            // Move the remainder forward and remove leading zeros if any
+            if (i + size2 < size1) {
+                remainder += x.charAt(i + size2);
+                remainder = removezero(remainder);
+            }
+        }
+
+        quotient += "."; // Add the '.' to the quotient after integer part is done
+
+        //For loop to do number of digits after decimal 
+        //Although asked for 30 digits but using 1000 here.
+        for (int i = 0; i < 1000; i++) {
+            remainder += "0";                       //For maintaning greater size
+            remainder = removezero(remainder);      //remove zeros at start
+
+            //Break if it is exactly divisible so remainder becomes zero.
+            if (remainder.equals("0")) {
+                break;
+            }
+
+            int count = 0;      //new cont for same use of number of subs.
+
+            //Adding zeros to make remainder same size as divisor
+            while (remainder.length() < size2) {
+                remainder = "0" + remainder;
+            }
+
+            //Doing same substracting of divisor from remainder till it is greater
+            while (remainder.length() > size2 || (remainder.length() == size2 && remainder.compareTo(y) >= 0)) {
+                //Converting to AInteger then substracting
+                remainder = makeint(remainder, false).sub(makeint(y, false)).toString();
+                remainder = removezero(remainder);
+                count++;    //Increment count
+            }
+
+            quotient += (char) (count + '0');   //Add to count after parting to char
+
+        }
+
+        AFloat ans = new AFloat(quotient);      //Making new AFloat to return
+        //If the sign of both num is different the ans will be -ve
+        if (this.sign != a.sign) {
+            ans.sign = true;
+        } 
+        //Else +ve ans
+        else {
+            ans.sign = false;
+        }
+        //converting tp Number of decimal places before '.' to after it.
+        ans.dec = ans.num.length() - ans.dec;
+        return ans;     //Returning
+    }
+
+    // Helper function to remove leading zeros
+    private String removezero(String s) {
+        int i = 0;
+        //Count number of zeros at end of string
+        while (i < s.length() - 1 && s.charAt(i) == '0') {
+            i++;
+        }
+        //if all of them are zeros return only 0.
+        if (i == s.length()) {
+            return "0";
+        }
+
+        //making substring after deleting the zeros
+        String ans = "";
+        for (int j = i; j < s.length(); j++) {
+            ans += s.charAt(j);
+        }
+
+        return ans;     //Returning.
+    }
 
     @Override
     public String toString() {
