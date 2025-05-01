@@ -171,7 +171,10 @@ public class AFloat {
 
         String x = this.num;    //Making strings for operands
         String y = a.num;
+        String z=removezero(y); //remove zeros at start of string
 
+        int d=y.length()-z.length();    //counting the number of deleted zeros.
+        y=z;
         int diff = x.length() + a.dec - this.dec - y.length();  //extra digits after the decimal for whichever is greater
 
         if (diff > 0) {
@@ -274,7 +277,7 @@ public class AFloat {
             ans.sign = false;
         }
         //converting tp Number of decimal places before '.' to after it.
-        ans.dec = ans.num.length() - ans.dec;
+        ans.dec = ans.num.length() - ans.dec - d;
         return ans;     //Returning
     }
 
@@ -377,6 +380,12 @@ public class AFloat {
         //Add '-' at start of string if negative
         if (sign) {
             ans = "-" + ans;
+        }
+        //Adding zero after decimal if dec is -ve
+        if(dec<0){
+            for(int k=0;k>dec;k--){
+                ans+="0";
+            }
         }
         return ans;     //return the modified string after conversion
     }
