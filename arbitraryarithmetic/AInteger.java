@@ -1,7 +1,7 @@
 package arbitraryarithmetic;
 
 public class AInteger {
-    // Defining member variables of string and sign of input
+    // Defining member variables of a and sign of input
     public String num;// number without sign.
     public boolean sign;// true if negative
 
@@ -11,25 +11,25 @@ public class AInteger {
         this.sign = false;
     }
 
-    // Contructor for string to AInteger
-    public AInteger(String a) {
-        parse(a); // parsing to AInteger
+    // Contructor for a to AInteger
+    public AInteger(String string) {
+        parse(string); // parsing to AInteger
     }
 
     // Parse function
-    private AInteger parse(String a) {
+    private AInteger parse(String string) {
         // if first char is -
-        if (a.charAt(0) == '-') {
+        if (string.charAt(0) == '-') {
             this.sign = true; // marking true to sign variable for the AInteger
-            String x = "";
+            String temp_1 = "";
             // Shifting each character by one place to right after removing first character.
-            for (int j = 0; j <= a.length() - 2; j++) {
-                x += a.charAt(j + 1);
+            for (int j = 0; j <= string.length() - 2; j++) {
+                temp_1 += string.charAt(j + 1);
             }
-            a = x;
+            string = temp_1;
         }
         // emove zeros at start
-        this.num = removezero(a);
+        this.num = removezero(string);
 
         // Edge case if the number was zero
         if (this.num.length() == 0) {
@@ -43,46 +43,46 @@ public class AInteger {
     }
 
     // Contructor to assign a AInteger using other predefined.
-    public AInteger(AInteger a) {
-        this.num = a.num;
-        this.sign = a.sign;
+    public AInteger(AInteger string) {
+        this.num = string.num;
+        this.sign = string.sign;
     }
 
     // Addition Logic
-    public AInteger add(AInteger a) {
-        if (this.sign && a.sign) {
-            return new AInteger("-" + this.adding(a)); // If both umbers were -ve add them and prefix "-"
+    public AInteger add(AInteger string) {
+        if (this.sign && string.sign) {
+            return new AInteger("-" + this.adding(string)); // If both umbers were -ve add them and prefix "-"
         }
-        if (this.sign && !a.sign) {
-            return new AInteger(a.subing(this)); // If first number us -ve second is -ve
+        if (this.sign && !string.sign) {
+            return new AInteger(string.subing(this)); // If first number us -ve second is -ve
         }
-        if (!this.sign && a.sign) {
-            return new AInteger(this.subing(a)); // If first is+ve and second is -ve
+        if (!this.sign && string.sign) {
+            return new AInteger(this.subing(string)); // If first is+ve and second is -ve
         } else {
-            return new AInteger(this.adding(a)); // Both Positive
+            return new AInteger(this.adding(string)); // Both Positive
         }
     }
 
-    public AInteger sub(AInteger a) {
-        if (this.sign && a.sign) {
-            return new AInteger(a.subing(this)); // If both a -ve substract first from second
+    public AInteger sub(AInteger string) {
+        if (this.sign && string.sign) {
+            return new AInteger(string.subing(this)); // If both a -ve substract first from second
         }
-        if (this.sign && !a.sign) {
-            return new AInteger("-" + a.adding(this)); // If opoosite sign add them.
+        if (this.sign && !string.sign) {
+            return new AInteger("-" + string.adding(this)); // If opoosite sign add them.
         }
-        if (!this.sign && a.sign) {
-            return new AInteger(a.adding(this)); // If opoosite sign add them.
+        if (!this.sign && string.sign) {
+            return new AInteger(string.adding(this)); // If opoosite sign add them.
         } else {
-            return new AInteger(this.subing(a)); // If both a +ve substract second from first
+            return new AInteger(this.subing(string)); // If both a +ve substract second from first
         }
     }
 
-    public AInteger mul(AInteger a) {
+    public AInteger mul(AInteger string) {
         AInteger ans = new AInteger();
 
-        ans.num = mulstr(this.num, a.num); // call the mul string function
+        ans.num = mulstr(this.num, string.num); // call the mul a function
 
-        if (this.sign == a.sign) {
+        if (this.sign == string.sign) {
             ans.sign = false; // if same sign then the resukt will have +ve sign
         }
 
@@ -92,18 +92,18 @@ public class AInteger {
         return ans;
     }
 
-    public AInteger div(AInteger a) {
+    public AInteger div(AInteger string) {
         // Handling the division by zero case if the second element is 0;
-        if (a.num.equals("0")) {
+        if (string.num.equals("0")) {
             System.out.println("Division by zero error");
             System.exit(0);
             return new AInteger();
 
         } else {
             AInteger ans = new AInteger();
-            ans.num = divstr(this.num, a.num); // call function
+            ans.num = divstr(this.num, string.num); // call function
 
-            if (this.sign == a.sign)
+            if (this.sign == string.sign)
                 ans.sign = false; // same sign gives positive result
 
             else {
@@ -114,71 +114,71 @@ public class AInteger {
     }
 
     // Adding the AInteger values only when both the strings are positive
-    private AInteger adding(AInteger a) {
+    private AInteger adding(AInteger string) {
         // Defining to strings to pass to the helper functions
-        String x = a.num;
-        String y = this.num;
+        String temp_1 = string.num;
+        String temp_2 = this.num;
         AInteger ans = new AInteger(); // to store the ouput
 
-        ans.num = addstr(x, y); // calling helper func addstr
+        ans.num = addstr(temp_1, temp_2); // calling helper func addstr
 
         ans.sign = false; // for adding always positive.
         return ans;
     }
 
-    private AInteger subing(AInteger a) {
-        String x = a.num;
-        String y = this.num;
+    private AInteger subing(AInteger string) {
+        String temp_1 = string.num;
+        String temp_2 = this.num;
         AInteger ans = new AInteger(); // to store the ouput
 
-        if (this.num.length() < a.num.length()) {
-            ans.num = substr(a.num, this.num); // Substracting bigger number from smaller and changinf the value of sign if swapped
+        if (this.num.length() < string.num.length()) {
+            ans.num = substr(string.num, this.num); // Substracting bigger number from smaller and changinf the value of sign if swapped
             ans.sign = true;
-        } else if (this.num.length() > a.num.length()) {
-            ans.num = substr(this.num, a.num);
+        } else if (this.num.length() > string.num.length()) {
+            ans.num = substr(this.num, string.num);
             ans.sign = false;
         } else {
             int i = 0;
             // chechking similarity of digits from left hand side
-            while (i < this.num.length() && this.num.charAt(i) == a.num.charAt(i)) {
+            while (i < this.num.length() && this.num.charAt(i) == string.num.charAt(i)) {
                 i++;
             }
             // if all the digits matched return 0
             if (i == this.num.length()) {
                 ans.num = "0";
                 ans.sign = false;
-            } else if (this.num.charAt(i) < a.num.charAt(i)) {
-                ans.num = substr(a.num, this.num); // substract the lexicographical larger from the smaller and updating the sign if swapped again
+            } else if (this.num.charAt(i) < string.num.charAt(i)) {
+                ans.num = substr(string.num, this.num); // substract the lexicographical larger from the smaller and updating the sign if swapped again
                 ans.sign = true;
             } else {
-                ans.num = substr(this.num, a.num);
+                ans.num = substr(this.num, string.num);
                 ans.sign = false;
             }
         }
         return ans; // return ans AInteger
     }
 
-    private static String addstr(String a, String b) {
+    private static String addstr(String string, String string_2) {
         String ans = "";
         int carry = 0;
-        int size1 = a.length() - 1; // store lengths
+        int size1 = string.length() - 1; // store lengths
 
-        int size2 = b.length() - 1;
+        int size2 = string_2.length() - 1;
 
-        int d1, d2, sum;
+        int ele1, ele2, sum;
 
         if (size1 < size2) {
-            return addstr(b, a); // Keeping the larger of both as the first parameter (in terms of length of string)
+            return addstr(string_2, string); // Keeping the larger of both as the first parameter (in terms of length of string)
         }
 
         // while loop for smaller number
         while (size2 >= 0) {
-            d1 = a.charAt(size1) - '0'; // element of first string
+            ele1 = string.charAt(size1) - '0'; // element of first a
             size1--;
 
-            d2 = b.charAt(size2) - '0'; // element of second string
+            ele2 = string_2.charAt(size2) - '0'; // element of second a
             size2--;
-            sum = d1 + d2 + carry; // adding them with carry
+            sum = ele1 + ele2 + carry; // adding them with carry
 
             ans = (sum % 10) + ans; // if it exceeds 10 then takes the unit digit and add it to the start of string
             carry = sum / 10; // the other tens digit is carry
@@ -186,9 +186,9 @@ public class AInteger {
 
         // Rest of string in larger string
         while (size1 >= 0) {
-            d1 = a.charAt(size1) - '0';
+            ele1 = string.charAt(size1) - '0';
             size1--;
-            sum = d1 + carry;
+            sum = ele1 + carry;
             ans = (sum % 10) + ans; // add the unit digit directly after adding the carry
             carry = sum / 10; // tens digit as carry
 
@@ -202,28 +202,28 @@ public class AInteger {
         return ans; // return string
     }
 
-    private static String substr(String a, String b) {
+    private static String substr(String string, String string_2) {
         String ans = "";
         int borrow = 0;
         boolean negative = false;
 
-        int size1 = a.length() - 1; // storing lengths
-        int size2 = b.length() - 1;
+        int size1 = string.length() - 1; // storing lengths
+        int size2 = string_2.length() - 1;
 
         // if second string is larger swap the strings and assign the sign as negative
         // true
         if (size1 < size2) {
-            String temp = a;
-            a = b;
-            b = temp;
+            String temp = string;
+            string = string_2;
+            string_2 = temp;
             negative = true;
         }
 
         // iterating in smaller string
         while (size2 >= 0) {
-            int d1 = a.charAt(size1) - '0' - borrow; // substract borrow from char of first string
-            int d2 = b.charAt(size2) - '0'; // second string element
-            int diff = d1 - d2;
+            int ele1 = string.charAt(size1) - '0' - borrow; // substract borrow from char of first string
+            int ele2 = string_2.charAt(size2) - '0'; // second string element
+            int diff = ele1 - ele2;
 
             if (diff < 0) {
                 diff += 10; // If ele1 is less than ele2 add 10 to diff and assign a borrow
@@ -237,8 +237,8 @@ public class AInteger {
         }
         // iterating in larger string which is left with same logics
         while (size1 >= 0) {
-            int d1 = a.charAt(size1) - '0' - borrow;
-            int diff = d1;
+            int ele1 = string.charAt(size1) - '0' - borrow;
+            int diff = ele1;
 
             if (diff < 0) {
                 diff += 10;
@@ -257,44 +257,44 @@ public class AInteger {
         return removezero(ans); // return after removing the zeros at start
     }
 
-    private static String mulstr(String a, String b) {
+    private static String mulstr(String string, String string_2) {
         int temp = 0;
-        int size1 = a.length(); // storing lengths
-        int size2 = b.length();
+        int size1 = string.length(); // storing lengths
+        int size2 = string_2.length();
         int[] result = new int[size1 + size2];
         // runming for loop for each element as we do in elementary multiplication
         for (int i = size1 - 1; i >= 0; i--) {
             for (int j = size2 - 1; j >= 0; j--) {
-                temp = result[i + j + 1] + (a.charAt(i) - '0') * (b.charAt(j) - '0');// multiply the single char
+                temp = result[i + j + 1] + (string.charAt(i) - '0') * (string_2.charAt(j) - '0');// multiply the single char
                 result[i + j + 1] = temp % 10;// add the unit digit
                 result[i + j] += temp / 10;// add carry to next element
             }
         }
         String ans = "";
         for (int i = 0; i < result.length; i++) {
-            ans += result[i]; // add result in the ans string from char to string
+            ans += result[i]; // add result in the ans from char to string
         }
         return removezero(ans);// return after removingzeros
     }
 
-    private static String divstr(String a, String b) {
-        if (b.equals("0")) {
+    private static String divstr(String string, String string_2) {
+        if (string_2.equals("0")) {
             return "Division by zero error"; // rechecking division by zero error
         }
-        if (a.equals("0")) {
+        if (string.equals("0")) {
             return "0"; // if first element is 0 dont proceed
         }
-        int size1 = a.length(); // storing lengths
-        int size2 = b.length();
+        int size1 = string.length(); // storing lengths
+        int size2 = string_2.length();
         if (size1 < size2)// if smaller first element then return 0;
         {
             return "0";
         }
 
-        // initialize remainder with first digits of a
+        // initialize remainder with first digits of string
         int[] remainder = new int[size2];
         for (int i = 0; i < size2; i++) {
-            remainder[i] = a.charAt(i) - '0';
+            remainder[i] = string.charAt(i) - '0';
         }
 
         // make array for result digits
@@ -308,14 +308,14 @@ public class AInteger {
             }
 
             // subtract divisor repeatedly
-            while (rem.length() > size2 || (rem.length() == size2 && rem.compareTo(b) >= 0)) {
-                rem = substr(rem, b); // subtract b from rem till rem becomes smaller
+            while (rem.length() > size2 || (rem.length() == size2 && rem.compareTo(string_2) >= 0)) {
+                rem = substr(rem, string_2); // subtract string_2 from rem till rem becomes smaller
                 rem = removezero(rem); // remove leading zeros in each iteration
                 count++;
             }
 
             if (i + size2 < size1) {
-                rem += a.charAt(i + size2);
+                rem += string.charAt(i + size2);
             }
             rem = removezero(rem);
 
