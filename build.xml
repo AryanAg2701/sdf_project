@@ -16,7 +16,7 @@
                destdir="${build.dir}"
                includeantruntime="false"
                debug="true"
-               verbose="true"/>
+               verbose="false"/>
     </target>
 
     <target name="jar" depends="compile">

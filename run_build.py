@@ -1,17 +1,4 @@
 #!/usr/bin/env python3
-"""
-run_build.py: A helper script to invoke Ant targets for the MyInfArith project.
-
-Usage:
-    python run_build.py [--target TARGET] [--args "int add 1 1"]
-
-Defaults:
-    target = run
-    args = ""
-
-This script will call:
-    ant clean compile jar run -Dargs="..."
-"""
 import argparse
 import subprocess
 import sys
@@ -30,11 +17,9 @@ def main():
 
     ant_cmd = ["ant", args.target]
 
-    # If we are running, include clean and compile steps automatically
     if args.target == "run":
         ant_cmd = ["ant", "clean", "compile", "jar", "run"]
 
-    # Append Java args property if provided
     if args.args:
         ant_cmd.append(f"-Dargs={args.args}")
 
