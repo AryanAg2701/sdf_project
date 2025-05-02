@@ -37,19 +37,13 @@ def running(dtype, operation, op1, op2):
     exec(["ant", f"-Dargs={arguments}", "run"])
 
 def main():
-    build_file_path = os.path.join(os.path.dirname(__file__), "build.xml")
-    if not os.path.exists(build_file_path):
-        sys.exit(1)
+    args = [arg for arg in sys.argv[1:] if arg != "--args"]
 
-    if len(sys.argv) == 2:
-        target = sys.argv[1]
-        if not building(target):
+    if len(args) == 1:
+        if not building(args[0]):
             sys.exit(1)
-
-    elif len(sys.argv) == 5:
-        dtype, operation, op1, op2 = sys.argv[1:]
-        running(dtype, operation, op1, op2)
-
+    elif len(args) == 4:
+        running(*args)
     else:
         sys.exit(1)
 
