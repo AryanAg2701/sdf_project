@@ -1,33 +1,57 @@
-#!/usr/bin/env python3
-import argparse
 import subprocess
+import os
 import sys
 
-def main():
-    parser = argparse.ArgumentParser(description="Invoke Ant build for MyInfArith project.")
-    parser.add_argument(
-        "--target", default="run",
-        help="Ant target to execute (clean, compile, jar, run, etc.)"
-    )
-    parser.add_argument(
-        "--args", default="",
-        help="Arguments to pass into the Java program, e.g. 'int add 1 1'"
-    )
-    args = parser.parse_args()
-
-    ant_cmd = ["ant", args.target]
-
-    if args.target == "run":
-        ant_cmd = ["ant", "clean", "compile", "jar", "run"]
-
-    if args.args:
-        ant_cmd.append(f"-Dargs={args.args}")
-
-    print(f"Executing: {' '.join(ant_cmd)}")
-    result = subprocess.run(ant_cmd)
+def exec(command):
+    result = subprocess.run(command, check=True)
     if result.returncode != 0:
-        print(f"Ant exited with code {result.returncode}", file=sys.stderr)
-        sys.exit(result.returncode)
+        sys.exit(1)
 
-if __name__ == '__main__':
+def building(target):
+    build_commands = {
+        "build": ["ant", "clean", "compile", "jar"],
+        "clean": ["ant", "clean"],
+        "compile": ["ant", "compile"],
+        "jar": ["ant", "jar"]
+    }
+    if target in build_commands:
+        exec(build_commands[target])
+        return True
+    return False
+
+def running(dtype, operation, op1, op2):
+    if dtype not in ("int", "float") or operation not in ("add", "sub", "mul", "div"):
+        sys.exit(1)
+
+    try:
+        op1 = float(op1) if dtype == "float" else int(op1)
+        op2 = float(op2) if dtype == "float" else int(op2)
+    except ValueError:
+        sys.exit(1)
+
+    arguments = f"{dtype} {operation} {op1} {op2}"
+
+    if not os.path.isdir(os.path.join(os.path.dirname(__file__), "build")):
+        exec(["ant", "clean", "compile", "jar"])
+
+    exec(["ant", f"-Dargs={arguments}", "run"])
+
+def main():
+    build_file_path = os.path.join(os.path.dirname(__file__), "build.xml")
+    if not os.path.exists(build_file_path):
+        sys.exit(1)
+
+    if len(sys.argv) == 2:
+        target = sys.argv[1]
+        if not building(target):
+            sys.exit(1)
+
+    elif len(sys.argv) == 5:
+        dtype, operation, op1, op2 = sys.argv[1:]
+        running(dtype, operation, op1, op2)
+
+    else:
+        sys.exit(1)
+
+if __name__ == "__main__":
     main()

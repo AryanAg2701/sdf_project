@@ -17,4 +17,3 @@ WORKDIR /app
 COPY --from=builder /app/dist/MyInfArith.jar ./MyInfArith.jar
 
 ENTRYPOINT ["java", "-jar", "MyInfArith.jar"]
-CMD []
